@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shàngdì de huà — Golden Light Ministry </title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            body:    ['"Lora"', 'Georgia', 'serif'],
+            ui:      ['"DM Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              50:  '#FFFBEA',
+              100: '#FEF3C0',
+              200: '#FDE47A',
+              300: '#FBCE38',
+              400: '#F5B815',
+              500: '#D99B08',
+              600: '#C08806',
+              700: '#A07008',
+              800: '#7A5310',
+              900: '#5A3D10',
+            },
+            royal: {
+              50:  '#EDF1FF',
+              100: '#D8E1FF',
+              200: '#B0C1FF',
+              300: '#809AFA',
+              400: '#5674F0',
+              500: '#3654DC',
+              600: '#2440C0',
+              700: '#1A30A0',
+              800: '#112278',
+              900: '#0B1650',
+              950: '#060C2A',
+            },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { color-scheme: light; }
+    html.dark { color-scheme: dark; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      min-height: 100vh;
+      background-color: #F0F3FF;
+      color: #0B1650;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    .dark body {
+      background-color: #06091A;
+      color: #D8E1FF;
+    }
+
+    /* Grain texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(237, 241, 255, 0.70);
+      backdrop-filter: blur(22px) saturate(1.5);
+      -webkit-backdrop-filter: blur(22px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.60);
+    }
+    .dark .glass {
+      background: rgba(10, 16, 45, 0.75);
+      border: 1px solid rgba(180, 200, 255, 0.10);
+    }
+
+    /* Decorative blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(75px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.38;
+    }
+    .dark .blob { opacity: 0.20; }
+
+    /* Archive card hover */
+    .archive-card {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    }
+    .archive-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 48px -12px rgba(36, 64, 192, 0.28);
+    }
+    .dark .archive-card:hover {
+      box-shadow: 0 24px 48px -12px rgba(10, 22, 80, 0.55);
+    }
+
+    /* Mood buttons */
+    .mood-btn {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .mood-btn:hover { transform: translateY(-1px); }
+    .mood-btn.active {
+      background: linear-gradient(135deg, #A07008 0%, #C08806 100%);
+      color: #FFFBEA;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(160, 112, 8, 0.40);
+    }
+    .dark .mood-btn.active {
+      background: linear-gradient(135deg, #F5B815 0%, #D99B08 100%);
+      color: #060C2A;
+    }
+
+    /* Scrollbar hide */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Fade animation */
+    @keyframes contentFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .content-fade { animation: contentFadeIn 0.45s ease both; }
+
+    /* Scripture border — gold */
+    .scripture-block {
+      border-left: 3px solid #C08806;
+      padding-left: 1.25rem;
+    }
+    .dark .scripture-block { border-left-color: #F5B815; }
+
+    /* Line clamps */
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    section { position: relative; z-index: 10; }
+
+    /* Prayer slide in */
+    @keyframes prayerSlide {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .prayer-item { animation: prayerSlide 0.35s ease both; }
+
+    /* Audio bar — gold gradient */
+    .audio-bar {
+      height: 5px;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #C08806 0%, #F5B815 100%);
+      position: relative;
+    }
+    .audio-bar::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #C08806;
+      box-shadow: 0 2px 6px rgba(160, 112, 8, 0.5);
+    }
+
+    /* Hero gradient — blue tones */
+    .hero-gradient {
+      background: linear-gradient(155deg,
+        rgba(216, 225, 255, 0.92) 0%,
+        rgba(237, 241, 255, 0.97) 50%,
+        rgba(224, 232, 255, 0.90) 100%);
+    }
+    .dark .hero-gradient {
+      background: linear-gradient(155deg,
+        rgba(8, 14, 38, 0.97) 0%,
+        rgba(10, 16, 45, 0.99) 50%,
+        rgba(6, 12, 42, 0.97) 100%);
+    }
+
+    /* Navbar blur */
+    .navbar {
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    }
+
+    /* Toggle thumb spring */
+    #toggleThumb {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .dark #toggleThumb { transform: translateX(22px); }
+
+    /* Focus rings — blue */
+    textarea:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(54, 84, 220, 0.22);
+    }
+
+    /* Reflection box — blue tint */
+    .reflection-box {
+      background: rgba(216, 225, 255, 0.55);
+      border: 1px solid rgba(54, 84, 220, 0.18);
+    }
+    .dark .reflection-box {
+      background: rgba(17, 34, 120, 0.30);
+      border: 1px solid rgba(128, 154, 250, 0.15);
+    }
+
+    /* Prayer box — gold tint */
+    .prayer-box {
+      background: rgba(254, 243, 192, 0.55);
+      border: 1px solid rgba(192, 136, 6, 0.22);
+    }
+    .dark .prayer-box {
+      background: rgba(90, 61, 16, 0.28);
+      border: 1px solid rgba(245, 184, 21, 0.15);
+    }
+
+    /* Scrolled navbar auto-bg */
+    #navbar-inner {
+      background: rgba(240, 243, 255, 0.85);
+      transition: background 0.4s ease;
+    }
+    .dark #navbar-inner {
+      background: rgba(6, 9, 26, 0.88);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Decorative blobs: blue + gold -->
+  <div aria-hidden="true">
+    <div class="blob w-[520px] h-[520px] top-[-160px] right-[-120px]" style="background:#B0C1FF;"></div>
+    <div class="blob w-[440px] h-[440px] top-[38%] left-[-100px]"    style="background:#FDE47A;"></div>
+    <div class="blob w-[360px] h-[360px] bottom-[8%] right-[8%]"     style="background:#809AFA;"></div>
+    <div class="blob w-[280px] h-[280px] top-[20%] left-[40%]"       style="background:#FBCE38; opacity:0.18;"></div>
+  </div>
+
+  <!-- ══════════════════ NAVBAR ══════════════════ -->
+  <nav class="navbar sticky top-0 z-50 border-b border-royal-200/35 dark:border-royal-800/25">
+    <div id="navbar-inner">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px]">
+
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-md"
+               style="background: linear-gradient(135deg, #2440C0 0%, #A07008 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/>
+            </svg>
+          </div>
+          <span class="font-display text-[1.25rem] font-semibold tracking-wide text-royal-900 dark:text-royal-100 group-hover:text-royal-700 dark:group-hover:text-gold-300 transition-colors duration-200">
+            上帝的话 - Golden Light Ministry
+          </span>
+        </a>
+
+        <!-- Desktop nav links -->
+        <div class="hidden md:flex items-center gap-7">
+          <a href="#renungan" class="font-ui text-sm text-royal-700/65 dark:text-royal-300/65 hover:text-royal-800 dark:hover:text-gold-300 transition-colors duration-200">Renungan</a>
+          <a href="#arsip"    class="font-ui text-sm text-royal-700/65 dark:text-royal-300/65 hover:text-royal-800 dark:hover:text-gold-300 transition-colors duration-200">Arsip</a>
+          <a href="#doa"      class="font-ui text-sm text-royal-700/65 dark:text-royal-300/65 hover:text-royal-800 dark:hover:text-gold-300 transition-colors duration-200">Titip Doa</a>
+        </div>
+
+        <!-- Dark mode toggle -->
+        <button id="darkToggle" onclick="toggleDark()" aria-label="Ganti mode terang/gelap"
+          class="relative w-[50px] h-[27px] rounded-full focus:outline-none focus:ring-2 focus:ring-royal-400 focus:ring-offset-2 transition-colors duration-300"
+          style="background: rgba(54, 84, 220, 0.20);">
+          <span id="toggleThumb"
+            class="absolute top-[3px] left-[3px] w-[21px] h-[21px] rounded-full shadow-md flex items-center justify-center bg-white">
+            <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] dark:hidden" fill="none" stroke="#2440C0" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] hidden dark:block" fill="#C08806" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+
+    <!-- ╔══════════════════════════════╗
+         ║  HERO + MAIN DEVOTIONAL     ║
+         ╚══════════════════════════════╝ -->
+    <section id="renungan" class="hero-gradient rounded-[2rem] p-6 sm:p-10 shadow-2xl shadow-royal-300/25 dark:shadow-royal-950/50">
+
+      <!-- Date header -->
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-9">
+        <div>
+          <p class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-royal-500/70 dark:text-gold-400/60 mb-1">
+            Renungan Hari Ini
+          </p>
+          <h1 id="todayDate" class="font-display text-3xl sm:text-[2.6rem] font-bold leading-tight text-royal-900 dark:text-royal-100">&nbsp;</h1>
+        </div>
+        <div class="glass rounded-2xl px-5 py-3 text-center self-start shrink-0 shadow-sm">
+          <p class="font-ui text-[0.6rem] uppercase tracking-widest text-royal-500/55 dark:text-gold-400/50">Hari ke</p>
+          <p id="dayOfYear" class="font-display text-[2.2rem] font-bold text-royal-700 dark:text-gold-300 leading-none my-0.5">&nbsp;</p>
+          <p class="font-ui text-[0.6rem] uppercase tracking-widest text-royal-500/55 dark:text-gold-400/50">tahun ini</p>
+        </div>
+      </div>
+
+      <!-- Mood filter -->
+      <div class="mb-9">
+        <p class="font-ui text-xs text-royal-700/55 dark:text-royal-300/55 mb-3">Bagaimana perasaanmu hari ini?</p>
+        <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+          <button onclick="filterByMood('semua')"          data-mood="semua"          class="mood-btn active shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">✨ Semua</button>
+          <button onclick="filterByMood('cemas')"          data-mood="cemas"          class="mood-btn shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">😟 Cemas</button>
+          <button onclick="filterByMood('bersyukur')"      data-mood="bersyukur"      class="mood-btn shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">🙏 Bersyukur</button>
+          <button onclick="filterByMood('lelah')"          data-mood="lelah"          class="mood-btn shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">😔 Lelah</button>
+          <button onclick="filterByMood('butuh kekuatan')" data-mood="butuh kekuatan" class="mood-btn shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">💪 Butuh Kekuatan</button>
+          <button onclick="filterByMood('damai')"          data-mood="damai"          class="mood-btn shrink-0 font-ui text-sm font-medium px-4 py-2 rounded-full border border-royal-300/60 dark:border-royal-700/50 text-royal-800 dark:text-royal-200 bg-white/50 dark:bg-royal-950/40">☮️ Damai</button>
+        </div>
+      </div>
+
+      <!-- Main devotional glassmorphic card -->
+      <div id="mainDevotional"
+           class="glass rounded-[1.75rem] p-6 sm:p-10 shadow-2xl shadow-royal-400/12 dark:shadow-royal-950/40">
+      </div>
+    </section>
+
+
+    <!-- ╔══════════════════════════════╗
+         ║   ARCHIVED DEVOTIONALS      ║
+         ╚══════════════════════════════╝ -->
+    <section id="arsip">
+      <div class="flex items-end justify-between mb-7">
+        <div>
+          <p class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-royal-500/65 dark:text-gold-400/55 mb-1">Koleksi</p>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-royal-900 dark:text-royal-100">Renungan Terdahulu</h2>
+        </div>
+        <a href="#" class="font-ui text-sm text-royal-600 dark:text-gold-400 hover:text-royal-800 dark:hover:text-gold-200 transition-colors duration-200 hidden sm:inline-flex items-center gap-1">
+          Lihat semua
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div id="archiveGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+
+
+    <!-- ╔══════════════════════════════╗
+         ║   TITIP DOA                 ║
+         ╚══════════════════════════════╝ -->
+    <section id="doa" class="glass rounded-[2rem] p-6 sm:p-10 shadow-xl shadow-royal-200/20 dark:shadow-royal-950/30">
+
+      <div class="mb-8">
+        <p class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-royal-500/65 dark:text-gold-400/55 mb-1">Komunitas</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-royal-900 dark:text-royal-100 mb-2">Titip Doa</h2>
+        <p class="font-body text-sm text-royal-700/60 dark:text-royal-300/55 leading-relaxed max-w-xl">
+          Bagikan pergumulan atau syukurmu secara anonim. Kami percaya bahwa doa yang dipanjatkan bersama membawa kuasa yang luar biasa.
+        </p>
+      </div>
+
+      <!-- Input -->
+      <div class="mb-9">
+        <textarea id="prayerInput" rows="4"
+          class="w-full rounded-2xl border border-royal-200/70 dark:border-royal-700/45 bg-white/70 dark:bg-royal-950/50 text-royal-900 dark:text-royal-100 placeholder-royal-400/45 dark:placeholder-royal-600/45 px-5 py-4 font-body text-sm leading-relaxed resize-none transition-all duration-200"
+          placeholder="Tuliskan pergumulan atau syukurmu di sini... (anonim &amp; aman)"></textarea>
+
+        <div class="flex items-center justify-between mt-3 gap-3 flex-wrap">
+          <div class="flex items-center gap-2">
+            <label for="prayerTag" class="font-ui text-xs text-royal-600/60 dark:text-royal-400/55">Tag:</label>
+            <select id="prayerTag"
+              class="font-ui text-xs rounded-xl border border-royal-200/70 dark:border-royal-700/45 bg-white/80 dark:bg-royal-950/60 text-royal-700 dark:text-royal-300 px-3 py-1.5">
+              <option value="🙏 Permohonan">🙏 Permohonan</option>
+              <option value="🙌 Syukur">🙌 Syukur</option>
+              <option value="💔 Pergumulan">💔 Pergumulan</option>
+              <option value="✨ Harapan">✨ Harapan</option>
+              <option value="🌿 Penyembuhan">🌿 Penyembuhan</option>
+            </select>
+          </div>
+          <button onclick="submitPrayer()"
+            class="font-ui text-sm font-semibold px-6 py-2.5 rounded-xl text-white shadow-md transition-all duration-200 active:scale-95 hover:shadow-lg"
+            style="background: linear-gradient(135deg, #1A30A0 0%, #C08806 100%);">
+            Titipkan Doa →
+          </button>
+        </div>
+        <p id="prayerError" class="hidden font-ui text-xs mt-2 text-red-500">⚠️ Tolong tulis doamu terlebih dahulu.</p>
+      </div>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-4 mb-7">
+        <div class="h-px flex-1 bg-royal-200/60 dark:bg-royal-800/35"></div>
+        <span class="font-display text-gold-400 dark:text-gold-600 text-xl">✦</span>
+        <div class="h-px flex-1 bg-royal-200/60 dark:bg-royal-800/35"></div>
+      </div>
+
+      <div class="flex items-center gap-3 mb-5">
+        <h3 class="font-display text-xl font-semibold text-royal-900 dark:text-royal-200">Doa yang Dititipkan</h3>
+        <span id="prayerCount" class="font-ui text-xs px-2.5 py-0.5 rounded-full bg-royal-100/80 dark:bg-royal-800/55 text-royal-700 dark:text-royal-300 font-medium">0</span>
+      </div>
+      <div id="prayerList" class="space-y-3"></div>
+    </section>
+  </main>
+
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="relative z-10 border-t border-royal-200/35 dark:border-royal-800/25 mt-6 py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="font-display text-lg sm:text-xl italic text-royal-700 dark:text-gold-400 mb-1">
+        "Firman-Mu adalah pelita bagi kakiku dan terang bagi jalanku."
+      </p>
+      <p class="font-ui text-xs text-royal-400/60 dark:text-gold-600/55 mb-5">— Mazmur 119:105</p>
+      <div class="w-10 h-px mx-auto mb-5" style="background: linear-gradient(90deg, transparent, #C08806, transparent);"></div>
+      <p class="font-ui text-xs text-royal-400/45 dark:text-royal-600/40">© 2025 Terang Jiwa · Dibuat dengan kasih untuk kemuliaan-Nya</p>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════ JAVASCRIPT ══════════════════ -->
+  <script>
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     MOCK DATA
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  const devotionals = [
+    {
+      id: 1, category: 'Ketenangan', mood: ['cemas', 'semua'],
+      title: 'Damai yang Melampaui Akal',
+      scripture: { text: 'Janganlah kamu khawatir tentang apa pun juga, tetapi nyatakanlah dalam segala hal keinginanmu kepada Allah dalam doa dan permohonan dengan ucapan syukur.', ref: 'Filipi 4:6' },
+      paragraphs: [
+        'Di tengah hiruk-pikuk kehidupan modern yang penuh tekanan, kecemasan seringkali datang seperti ombak yang tak terduga. Pikiran kita mudah terseret dalam pusaran "bagaimana jika" dan "seharusnya", meninggalkan kita kelelahan sebelum hari bahkan dimulai.',
+        'Paulus menulis surat ini bukan dari kenyamanan rumahnya, melainkan dari dalam penjara. Namun dari jeruji itu mengalir damai yang luar biasa — bukan karena situasinya sempurna, melainkan karena ia telah mempraktikkan satu kebiasaan kudus: membawa segala kekhawatiran kepada Tuhan, bukan menyimpannya sendiri.',
+        'Doa bukan sekadar ritual, melainkan tindakan radikal dari kepercayaan. Ketika kita datang kepada-Nya dengan jujur — dengan semua ketakutan, pertanyaan, dan keraguan kita — kita membuka ruang bagi damai-Nya yang melampaui logika manusia untuk berdiam dalam hati kita.',
+      ],
+      reflection: 'Hari ini, coba ceritakan satu hal yang paling mengkhawatirkanmu kepada Tuhan, seolah berbicara dengan sahabat terpercaya. Percayakan dan lepaskan.',
+      prayer: 'Tuhan, aku membawa kekhawatiranku yang besar ini kepada-Mu. Aku memilih untuk percaya bahwa tangan-Mu lebih besar dari masalahku. Isi hatiku dengan damai-Mu yang ajaib. Amin.',
+      date: 'Senin, 12 Mei 2025', readTime: '5 menit',
+    },
+    {
+      id: 2, category: 'Syukur', mood: ['bersyukur', 'semua'],
+      title: 'Menghitung Berkat di Setiap Hari',
+      scripture: { text: 'Bersyukurlah dalam segala hal, sebab itulah yang dikehendaki Allah di dalam Kristus Yesus bagi kamu.', ref: '1 Tesalonika 5:18' },
+      paragraphs: [
+        'Ada sebuah keajaiban sederhana yang sering kita lewatkan: secangkir kopi pagi yang masih mengepul, senyum orang yang kita cintai, napas yang kita hirup tanpa sadar. Syukur bukan tentang berpura-pura semua baik-baik saja — ini tentang melatih mata batin kita untuk melihat kasih karunia di celah-celah kehidupan biasa.',
+        'Penelitian modern pun membuktikan apa yang Alkitab ajarkan ribuan tahun lalu: orang yang terbiasa bersyukur memiliki kesehatan mental yang lebih baik, tidur lebih nyenyak, dan hubungan yang lebih dalam. Syukur adalah latihan rohani yang juga menguntungkan jiwa raga.',
+        'Bersyukur "dalam segala hal" bukan berarti bersyukur "untuk segala hal". Kita tidak perlu bersyukur atas rasa sakit itu sendiri, melainkan percaya bahwa bahkan dalam musim gelap, ada tangan yang memimpin kita menuju terang yang tak pernah padam.',
+      ],
+      reflection: 'Tuliskan tiga hal — sekecil apapun — yang kamu syukuri hari ini. Biarkan rasa terima kasih perlahan-lahan mengubah perspektifmu.',
+      prayer: 'Tuhan, buka mataku untuk melihat berkat-berkat yang sering aku lewatkan. Ajar aku menjadi pribadi yang hidupnya berbau wangi syukur setiap saat. Amin.',
+      date: 'Selasa, 13 Mei 2025', readTime: '4 menit',
+    },
+    {
+      id: 3, category: 'Pemulihan', mood: ['lelah', 'semua'],
+      title: 'Istirahat adalah Tindakan Iman',
+      scripture: { text: 'Marilah kepada-Ku, semua yang letih lesu dan berbeban berat, Aku akan memberi kelegaan kepadamu.', ref: 'Matius 11:28' },
+      paragraphs: [
+        'Budaya kita memuliakan kesibukan. "Aku sangat sibuk" telah menjadi lencana kehormatan, dan beristirahat sering dianggap sebagai kelemahan atau kemalasan. Namun Yesus mengundang mereka yang "letih lesu" — bukan yang penuh semangat — untuk datang kepada-Nya.',
+        'Kelelahan bisa berbentuk fisik: tubuh yang meminta rebahan. Tapi kelelahan bisa juga berbentuk emosional: hati yang sudah terlalu lama mengangkat beban orang lain. Atau kelelahan rohani: jiwa yang haus namun tidak tahu dari mana harus meminum air hidup.',
+        'Yesus tidak berkata "bekerjalah lebih keras dan kamu akan menemukan kedamaian." Ia berkata "marilah" — sebuah undangan yang lembut, tanpa syarat, tanpa penilaian. Datanglah dengan kelelahanmu, dan temukan kelegaan yang hanya Ia yang dapat berikan.',
+      ],
+      reflection: 'Izinkan dirimu beristirahat hari ini tanpa rasa bersalah. Istirahat bukan pengkhianatan terhadap produktivitas — ini adalah tindakan kepercayaan bahwa Tuhan yang menjaga dunia ini.',
+      prayer: 'Tuhan Yesus, aku datang kepada-Mu dengan segala kelelahanku. Angkatlah beban yang selama ini aku tanggung sendiri. Beri aku kelegaan dan pulihkan kekuatanku di dalam-Mu. Amin.',
+      date: 'Rabu, 14 Mei 2025', readTime: '5 menit',
+    },
+    {
+      id: 4, category: 'Kekuatan', mood: ['butuh kekuatan', 'semua'],
+      title: 'Ketika Langkahku Goyah, Ia Tetap Teguh',
+      scripture: { text: 'Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.', ref: 'Filipi 4:13' },
+      paragraphs: [
+        'Ada saat-saat dalam hidup di mana kita merasa sudah di ujung batas kemampuan. Pekerjaan yang tak kunjung selesai, hubungan yang melelahkan, mimpi yang belum juga terwujud. Di titik itulah kita paling mudah tersandung oleh keraguan: "Apakah aku cukup kuat untuk ini?"',
+        'Ayat yang paling sering dikutip ini sering disalahpahami sebagai janji bahwa kita bisa melakukan apa saja. Namun konteksnya lebih dalam: Paulus berbicara tentang kemampuan untuk puas dan bersyukur baik dalam kelimpahan maupun kekurangan — bukan superpower untuk meraih segalanya.',
+        'Kekuatan sejati bukan berarti tidak pernah jatuh. Melainkan memilih untuk bangkit satu kali lebih banyak daripada kita jatuh, karena kita tahu ada tangan yang sudah menunggu untuk mengangkat kita. Bukan dengan kekuatanmu sendiri, melainkan dengan Dia yang tak pernah kehabisan kuasa.',
+      ],
+      reflection: 'Di mana kamu merasa paling lemah hari ini? Akui kelemahan itu dengan jujur kepada-Nya. Kelemahan kita adalah kanvas terbaik bagi kuasa-Nya.',
+      prayer: 'Bapa, aku mengakui bahwa kekuatanku terbatas. Namun aku percaya kekuatan-Mu tak terbatas. Jadikan kelemahanku sebagai tempat kuasa-Mu bersinar. Amin.',
+      date: 'Kamis, 15 Mei 2025', readTime: '6 menit',
+    },
+    {
+      id: 5, category: 'Kedamaian', mood: ['damai', 'semua'],
+      title: 'Diam dan Tahu Bahwa Ia Adalah Allah',
+      scripture: { text: 'Diamlah dan ketahuilah, bahwa Akulah Allah! Aku ditinggikan di antara bangsa-bangsa, ditinggikan di bumi.', ref: 'Mazmur 46:11' },
+      paragraphs: [
+        'Dalam keheningan yang jarang kita ciptakan, ada sebuah kebenaran yang berbisik: kamu tidak perlu menyelesaikan semuanya hari ini. Kamu tidak perlu memiliki semua jawaban. Kamu tidak perlu menjadi sempurna untuk dicintai-Nya.',
+        '"Diamlah" dalam bahasa aslinya mengandung nuansa "berhentilah berjuang" atau "lepaskan". Bukan kemalasan, melainkan kepasrahan yang sadar — sebuah pilihan aktif untuk mengakui bahwa ada Pribadi yang lebih besar sedang bekerja di balik layar kehidupan kita.',
+        'Kedamaian sejati bukan ketiadaan badai, melainkan ketenangan di tengahnya. Seperti kapal yang jangkarnya tertanam dalam, kita mungkin bergoyang dilanda gelombang, namun tidak hanyut. Jangkar kita adalah keyakinan bahwa Ia yang menciptakan lautan juga mengenal nama kita.',
+      ],
+      reflection: 'Luangkan 5 menit hari ini hanya untuk diam — tanpa HP, tanpa musik, tanpa agenda. Biarkan keheningan berbicara kepada jiwamu.',
+      prayer: 'Tuhan, dalam kesibukan hari ini, ajar aku untuk berhenti sejenak dan menyadari kehadiran-Mu. Biar kedamaian-Mu menjadi dasarku berpijak. Amin.',
+      date: 'Jumat, 16 Mei 2025', readTime: '4 menit',
+    },
+  ];
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PRAYER STATE
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  let prayers = [
+    { id: 1, text: 'Doakan agar ujianku minggu depan berjalan lancar dan aku bisa tenang menghadapinya.', tag: '🙏 Permohonan', time: '2 jam lalu', doves: 12 },
+    { id: 2, text: 'Bersyukur karena anakku akhirnya sembuh dari sakit yang panjang. Terima kasih Tuhan!', tag: '🙌 Syukur', time: '5 jam lalu', doves: 28 },
+    { id: 3, text: 'Tolong doakan relasiku yang sedang dalam masa sulit. Kami butuh hikmat dan kesabaran.', tag: '💔 Pergumulan', time: 'kemarin', doves: 19 },
+  ];
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DARK MODE
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function toggleDark() {
+    const html = document.documentElement;
+    html.classList.toggle('dark');
+    localStorage.setItem('tjTheme', html.classList.contains('dark') ? 'dark' : 'light');
+  }
+  (function initTheme() {
+    const saved = localStorage.getItem('tjTheme');
+    const prefer = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefer)) document.documentElement.classList.add('dark');
+  })();
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DATE HELPERS
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function getFormattedDate() {
+    const now    = new Date();
+    const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  function getDayOfYear() {
+    const now = new Date();
+    return Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     RENDER — Main Devotional
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function renderMainDevotional(dev) {
+    const container = document.getElementById('mainDevotional');
+    const bodyHtml = dev.paragraphs
+      .map(p => `<p class="font-body text-[0.97rem] sm:text-base text-royal-900/80 dark:text-royal-100/80 leading-[1.9]">${p}</p>`)
+      .join('');
+
+    container.innerHTML = `
+      <div class="content-fade">
+        <!-- Meta row -->
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mb-6">
+          <span class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.15em] px-3 py-1 rounded-full bg-royal-100/80 dark:bg-royal-800/50 text-royal-700 dark:text-royal-300">${dev.category}</span>
+          <span class="text-royal-300/45 text-xs">·</span>
+          <span class="font-ui text-xs text-royal-500/60 dark:text-royal-400/55">📖 ${dev.readTime}</span>
+          <span class="text-royal-300/45 text-xs">·</span>
+          <span class="font-ui text-xs text-royal-500/60 dark:text-royal-400/55">${dev.date}</span>
+        </div>
+
+        <!-- Title -->
+        <h2 class="font-display text-[2rem] sm:text-[2.8rem] lg:text-[3.2rem] font-bold leading-[1.15] text-royal-900 dark:text-royal-50 mb-7">${dev.title}</h2>
+
+        <!-- Scripture -->
+        <div class="scripture-block py-1 mb-9 rounded-r-xl" style="background:rgba(216,225,255,0.40);">
+          <p class="font-body text-base sm:text-lg italic text-royal-800 dark:text-royal-200 leading-[1.8] mb-2">"${dev.scripture.text}"</p>
+          <p class="font-ui text-sm font-semibold text-gold-600 dark:text-gold-400">${dev.scripture.ref}</p>
+        </div>
+
+        <!-- Body -->
+        <div class="space-y-5 mb-9">${bodyHtml}</div>
+
+        <!-- Ornamental divider -->
+        <div class="flex items-center gap-4 my-9">
+          <div class="h-px flex-1 bg-royal-200/60 dark:bg-royal-800/35"></div>
+          <span class="font-display text-gold-400/80 dark:text-gold-600/70 text-2xl">✦</span>
+          <div class="h-px flex-1 bg-royal-200/60 dark:bg-royal-800/35"></div>
+        </div>
+
+        <!-- Reflection -->
+        <div class="reflection-box rounded-2xl p-5 mb-5">
+          <p class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-royal-600 dark:text-royal-400 mb-2">💡 Refleksi Harian</p>
+          <p class="font-body text-sm italic text-royal-800/80 dark:text-royal-100/75 leading-[1.8]">${dev.reflection}</p>
+        </div>
+
+        <!-- Prayer -->
+        <div class="prayer-box rounded-2xl p-5 mb-8">
+          <p class="font-ui text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-gold-700 dark:text-gold-400 mb-2">🙏 Doa Hari Ini</p>
+          <p class="font-body text-sm italic text-royal-900/80 dark:text-royal-100/75 leading-[1.8]">${dev.prayer}</p>
+        </div>
+
+        <!-- Audio player placeholder -->
+        <div class="rounded-2xl p-5 border border-royal-200/50 dark:border-royal-700/30"
+             style="background:linear-gradient(120deg,rgba(216,225,255,0.65) 0%,rgba(254,243,192,0.45) 100%);">
+          <div class="flex items-center gap-3.5 mb-4">
+            <button aria-label="Putar audio renungan" onclick="toggleAudio(this)"
+              class="w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-transform duration-200 active:scale-90 shrink-0"
+              style="background:linear-gradient(135deg,#1A30A0 0%,#C08806 100%);">
+              <svg class="play-icon w-[18px] h-[18px] text-white ml-0.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="pause-icon w-[18px] h-[18px] text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <div class="min-w-0">
+              <p class="font-ui text-sm font-medium text-royal-900 dark:text-royal-200 truncate">${dev.title}</p>
+              <p class="font-ui text-xs text-royal-500/55 dark:text-royal-400/50">Audio Renungan · ${dev.readTime}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-ui text-xs text-royal-400/55 w-8 text-right shrink-0">0:00</span>
+            <div class="flex-1 h-1.5 rounded-full bg-royal-200/65 dark:bg-royal-800/45 relative overflow-visible">
+              <div class="audio-bar w-[30%] h-full"></div>
+            </div>
+            <span class="font-ui text-xs text-royal-400/55 w-8 shrink-0">5:00</span>
+          </div>
+          <p class="font-ui text-[0.6rem] text-royal-400/40 dark:text-royal-600/35 text-center mt-2.5">🎵 Konten audio akan segera tersedia</p>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     MOOD FILTER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function filterByMood(mood) {
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mood === mood);
+    });
+    const matched = devotionals.filter(d => d.mood.includes(mood));
+    if (!matched.length) return;
+    renderMainDevotional(matched[Math.floor(Math.random() * matched.length)]);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     AUDIO TOGGLE (visual only)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function toggleAudio(btn) {
+    btn.querySelector('.play-icon').classList.toggle('hidden');
+    btn.querySelector('.pause-icon').classList.toggle('hidden');
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     RENDER — Archive Grid
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  const archiveAccents = [
+    'from-royal-400 to-royal-600',
+    'from-gold-400 to-gold-600',
+    'from-royal-300 to-gold-500',
+  ];
+
+  function renderArchive() {
+    const grid = document.getElementById('archiveGrid');
+    grid.innerHTML = devotionals.slice(1, 4).map((dev, i) => `
+      <article
+        class="archive-card glass rounded-[1.4rem] overflow-hidden shadow-md shadow-royal-300/15 dark:shadow-royal-950/35 cursor-pointer group"
+        onclick="loadFromArchive(${dev.id})"
+        tabindex="0" role="button"
+        aria-label="Baca renungan: ${dev.title}"
+        onkeydown="if(event.key==='Enter')loadFromArchive(${dev.id})">
+
+        <div class="h-[3px] w-full bg-gradient-to-r ${archiveAccents[i]}"></div>
+
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-ui text-[0.6rem] font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-royal-100/80 dark:bg-royal-800/50 text-royal-700 dark:text-royal-300">${dev.category}</span>
+            <span class="font-ui text-xs text-royal-400/50 dark:text-royal-600/50">${dev.readTime}</span>
+          </div>
+
+          <h3 class="font-display text-xl font-bold text-royal-900 dark:text-royal-100 leading-snug mb-2
+                     group-hover:text-royal-600 dark:group-hover:text-gold-300 transition-colors duration-200">
+            ${dev.title}
+          </h3>
+
+          <p class="font-body text-xs italic text-royal-600/60 dark:text-royal-300/55 mb-1 line-clamp-2">"${dev.scripture.text}"</p>
+          <p class="font-ui text-xs font-medium text-gold-700/75 dark:text-gold-400/65 mb-4">${dev.scripture.ref}</p>
+          <p class="font-body text-sm text-royal-700/65 dark:text-royal-200/60 leading-relaxed line-clamp-3">${dev.paragraphs[0]}</p>
+
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-royal-100/75 dark:border-royal-800/30">
+            <span class="font-ui text-xs text-royal-400/50 dark:text-royal-600/45">${dev.date}</span>
+            <span class="font-ui text-xs font-medium text-royal-600 dark:text-gold-400
+                         group-hover:translate-x-1 transition-transform duration-200 inline-flex items-center gap-1">
+              Baca
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function loadFromArchive(id) {
+    const dev = devotionals.find(d => d.id === id);
+    if (!dev) return;
+    renderMainDevotional(dev);
+    document.getElementById('renungan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PRAYER — Submit & Render
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  function submitPrayer() {
+    const input   = document.getElementById('prayerInput');
+    const tagEl   = document.getElementById('prayerTag');
+    const errorEl = document.getElementById('prayerError');
+    const text    = input.value.trim();
+    if (!text) { errorEl.classList.remove('hidden'); input.focus(); return; }
+    errorEl.classList.add('hidden');
+    prayers.unshift({ id: Date.now(), text, tag: tagEl.value, time: 'baru saja', doves: 0 });
+    input.value = '';
+    renderPrayers();
+  }
+
+  function dovePrayer(id) {
+    const p = prayers.find(item => item.id === id);
+    if (p) { p.doves++; renderPrayers(); }
+  }
+
+  function renderPrayers() {
+    const list    = document.getElementById('prayerList');
+    const countEl = document.getElementById('prayerCount');
+    countEl.textContent = prayers.length;
+
+    if (!prayers.length) {
+      list.innerHTML = `<p class="font-body text-sm italic text-royal-400/55 dark:text-royal-600/50 text-center py-6">Belum ada doa yang dititipkan. Jadilah yang pertama!</p>`;
+      return;
+    }
+
+    list.innerHTML = prayers.map(p => `
+      <div class="prayer-item glass rounded-2xl p-4 transition-shadow duration-200 hover:shadow-md hover:shadow-royal-200/20 dark:hover:shadow-royal-950/35">
+        <div class="flex items-start gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="font-ui text-[0.6rem] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-royal-100/80 dark:bg-royal-800/50 text-royal-700 dark:text-royal-300">${p.tag}</span>
+              <span class="font-ui text-[0.6rem] text-royal-400/45 dark:text-royal-600/40">${p.time}</span>
+            </div>
+            <p class="font-body text-sm text-royal-900/80 dark:text-royal-100/80 leading-relaxed">${escapeHtml(p.text)}</p>
+          </div>
+          <button onclick="dovePrayer(${p.id})" aria-label="Doakan bersama"
+            class="shrink-0 flex flex-col items-center gap-0.5 text-royal-300/55 dark:text-royal-700/55
+                   hover:text-gold-500 dark:hover:text-gold-400 transition-colors duration-200 group/dove">
+            <span class="text-[1.2rem] group-hover/dove:scale-110 transition-transform duration-200">🕊️</span>
+            <span class="font-ui text-[0.6rem] text-royal-400/50 dark:text-royal-600/45">${p.doves}</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (document.activeElement?.id === 'prayerInput' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submitPrayer();
+  });
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     INIT
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('todayDate').textContent = getFormattedDate();
+    document.getElementById('dayOfYear').textContent = getDayOfYear();
+    renderMainDevotional(devotionals[0]);
+    renderArchive();
+    renderPrayers();
+  });
+
+  </script>
+</body>
+</html>
